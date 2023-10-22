@@ -49,7 +49,7 @@ itm = np.array(ITM(0.1, 1))
 stm = np.array(STM(9.9, 1))
 
 
-U_2, S_2, V_2 = svd((stm @ itm)[:2, :2] / 0.1)
+U_2, S_2, V_2 = svd((stm[0: 2, 0 : 6] @ itm)[:2, :2] / 0.1)
 
 transform_mat_2 = [U_2[0] * S_2[0], U_2[1] * S_2[1]]
 transform_mat_2 = np.array(transform_mat_2)
@@ -61,7 +61,7 @@ res = [phi_calc(transform_mat_1, transform_mat_2, phi) for phi in phis]
 res_min = min(res)
 res_max = max(res)
 
-w, v = eig(a = STM(10, 1)[:2, :2], b = (stm @ itm) [:2, :2] / 0.1)
+w, v = eig(a = STM(10, 1)[0 : 2, 3 : 5], b = (stm[0: 2, 0 : 6] @ itm) [:2, :2] / 0.1)
 
 v0 = v[:, 0]
 v1 = v[:, 1]
@@ -70,6 +70,8 @@ print(v0, v1)
 
 t0 = np.arctan(v0[1] / v0[0])
 t1 = np.arctan(v1[1] / v1[0])
+
+print(t0, t1)
 
 plt.plot(phis, res)
 plt.plot(phis, [res_max if t0 < phi + 2 * math.pi / 628 and t0 > phi else res_min for phi in phis])
