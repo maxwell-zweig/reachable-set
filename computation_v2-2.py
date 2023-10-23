@@ -41,8 +41,8 @@ ITM = lambda t, n: [[(1 - np.cos(t * n)) / n ** 2, -2 * (- t * n + np.sin(t * n)
 
 U_1, S_1, V_1 = svd(STM(10, 1)[0 : 2, 3 : 5])
 
-transform_mat_1 = [U_1[0] * S_1[0], U_1[1] * S_1[1]]
-transform_mat_1 = np.array(transform_mat_1)
+transform_mat_1 = [U_1.T[0] * S_1[0], U_1.T[1] * S_1[1]]
+transform_mat_1 = np.array(transform_mat_1).T
 
 
 itm = np.array(ITM(0.1, 1))
@@ -51,9 +51,10 @@ stm = np.array(STM(9.9, 1))
 
 U_2, S_2, V_2 = svd((stm[0: 2, 0 : 6] @ itm)[:2, :2] / 0.1)
 
-transform_mat_2 = [U_2[0] * S_2[0], U_2[1] * S_2[1]]
-transform_mat_2 = np.array(transform_mat_2)
+transform_mat_2 = [U_2.T[0] * S_2[0], U_2.T[1] * S_2[1]]
+transform_mat_2 = np.array(transform_mat_2).T
 
+plot_reachable_sets(STM(10, 1)[0 : 2, 3 : 5], (stm[0: 2, 0 : 6] @ itm)[:2, :2] / 0.1)
 plot_reachable_sets(transform_mat_1, transform_mat_2)
 
 phis = np.linspace(0, 2 * math.pi, 628)
@@ -61,20 +62,40 @@ res = [phi_calc(transform_mat_1, transform_mat_2, phi) for phi in phis]
 res_min = min(res)
 res_max = max(res)
 
-w, v = eig(a = STM(10, 1)[0 : 2, 3 : 5], b = (stm[0: 2, 0 : 6] @ itm) [:2, :2] / 0.1)
+
+a_ = np.array(STM(10, 1)[0 : 2, 3 : 5])
+aT = STM(10, 1)[0 : 2, 3 : 5].T
+
+b_ = np.array((stm[0: 2, 0 : 6] @ itm) [:2, :2] / 0.1)
+bT = np.array((stm[0: 2, 0 : 6] @ itm) [:2, :2] / 0.1).T
+
+
+print(a_.shape)
+print(b_.shape)
+
+
+
+w, v = eig(a = a_ @ aT, b = b_ @ bT)
 
 v0 = v[:, 0]
 v1 = v[:, 1]
-
+print(np.sqrt(w))
 print(v0, v1)
 
-t0 = np.arctan(v0[1] / v0[0])
-t1 = np.arctan(v1[1] / v1[0])
+t0 = np.arctan2(v0[1] , v0[0])
+t1 = np.arctan2(v1[1] , v1[0])
 
 print(t0, t1)
 
+t0_f = phi_calc(a_, b_, t0 + math.pi / 2)
+t1_f = phi_calc(a_, b_, t1 + math.pi / 2)
+
+
+
+
+
 plt.plot(phis, res)
-plt.plot(phis, [res_max if t0 < phi + 2 * math.pi / 628 and t0 > phi else res_min for phi in phis])
-plt.plot(phis, [res_max if t1 < phi + 2 * math.pi / 628 and t1 > phi else res_min for phi in phis])
+plt.axvline(x=t0 + math.pi / 2)
+plt.axvline(x=t1 + math.pi /2 )
 plt.show()
 
