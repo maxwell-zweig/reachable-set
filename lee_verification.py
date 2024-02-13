@@ -15,39 +15,38 @@ This satisfies x^TMx \leq m. Assuming further that M is not a degenerate ellipso
 
 
 import numpy as np
-from scipy.linalg import cholesky # computes upper triangle by default, matches paper
+from scipy.linalg import cholesky  # computes upper triangle by default, matches paper
 
 
 def sample(S, z_hat, m_FA, Gamma_Threshold=1.0):
 
     nz = S.shape[0]
-    z_hat = z_hat.reshape(nz,1)
+    z_hat = z_hat.reshape(nz, 1)
 
     X_Cnz = np.random.normal(size=(nz, m_FA))
 
-    rss_array = np.sqrt(np.sum(np.square(X_Cnz),axis=0))
-    kron_prod = np.kron( np.ones((nz,1)), rss_array)
+    rss_array = np.sqrt(np.sum(np.square(X_Cnz), axis=0))
+    kron_prod = np.kron(np.ones((nz, 1)), rss_array)
 
-    X_Cnz = X_Cnz / kron_prod       # Points uniformly distributed on hypersphere surface
+    X_Cnz = X_Cnz / kron_prod  # Points uniformly distributed on hypersphere surface
 
-    R = np.ones((nz,1))*( np.power( np.random.rand(1,m_FA), (1./nz)))
+    R = np.ones((nz, 1)) * (np.power(np.random.rand(1, m_FA), (1.0 / nz)))
 
-    unif_sph=R*X_Cnz;               # m_FA points within the hypersphere
-    T = np.asmatrix(cholesky(S))    # Cholesky factorization of S => S=T’T
+    unif_sph = R * X_Cnz
+    # m_FA points within the hypersphere
+    T = np.asmatrix(cholesky(S))  # Cholesky factorization of S => S=T’T
 
-
-    unif_ell = T.H*unif_sph ; # Hypersphere to hyperellipsoid mapping
+    unif_ell = T.H * unif_sph
+    # Hypersphere to hyperellipsoid mapping
 
     # Translation and scaling about the center
-    z_fa=(unif_ell * np.sqrt(Gamma_Threshold)+(z_hat * np.ones((1,m_FA))))
+    z_fa = unif_ell * np.sqrt(Gamma_Threshold) + (z_hat * np.ones((1, m_FA)))
 
     return np.array(z_fa)
 
 
-
-
 def plot_elipsoid(M, m):
-
+    pass
 
 
 #  print(equation)
