@@ -73,13 +73,13 @@ def reachable_set_calcs(t2, t1):
     transform_mat_2 = [U_2.T[0] * S_2[0], U_2.T[1] * S_2[1]]
     transform_mat_2 = np.array(transform_mat_2).T
 
-    # plot_reachable_sets(STM(t2, 1)[0 : 2, 3 : 5], (stm[0: 2, 0 : 6] @ itm)[:2, :2] / t1)
-    # plot_reachable_sets(transform_mat_1, transform_mat_2)
+    plot_reachable_sets(STM(t2, 1)[0:2, 3:5], (stm[0:2, 0:6] @ itm)[:2, :2] / t1)
+    plot_reachable_sets(transform_mat_1, transform_mat_2)
 
-    # phis = np.linspace(0, 2 * math.pi, 628)
-    # res = [phi_calc(transform_mat_1, transform_mat_2, phi) for phi in phis]
-    # res_min = min(res)
-    # res_max = max(res)
+    phis = np.linspace(0, 2 * math.pi, 628)
+    res = [phi_calc(transform_mat_1, transform_mat_2, phi) for phi in phis]
+    res_min = min(res)
+    res_max = max(res)
 
     a_ = np.array(STM(t2, 1)[0:2, 3:5])
     aT = STM(t2, 1)[0:2, 3:5].T
@@ -93,22 +93,19 @@ def reachable_set_calcs(t2, t1):
 
     v0 = v[:, 0]
     v1 = v[:, 1]
-    # print(np.sqrt(w))
-    # print(v0, v1)
+    print(np.sqrt(w))
+    print(v0, v1)
 
     t0 = np.arctan2(v0[1], v0[0])
     t1 = np.arctan2(v1[1], v1[0])
 
-    # print(t0, t1)
-    # print()
+    print(t0, t1)
 
-    # plt.plot(phis, res)
-    # plt.axvline(x=t0)
-    # plt.axvline(x=t1)
-    # plt.show()
-
-    # print(np.sqrt(w), t0, t1)
-
+    plt.plot(phis, res)
+    plt.axvline(x=t0)
+    plt.axvline(x=t1)
+    plt.show()
+    print()
     return np.sqrt(w), t0, t1
 
 

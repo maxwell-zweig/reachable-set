@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    130436,       3266]
-NotebookOptionsPosition[    125590,       3190]
-NotebookOutlinePosition[    126024,       3207]
-CellTagsIndexPosition[    125981,       3204]
+NotebookDataLength[    130538,       3267]
+NotebookOptionsPosition[    125692,       3191]
+NotebookOutlinePosition[    126126,       3208]
+CellTagsIndexPosition[    126083,       3205]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -2634,50 +2634,51 @@ etGbaP4Dpy929w==
                   TagBox["t2", HoldForm]}], "]"}], "2"]}]}], "\[Equal]", 
          "0"}]],
       Annotation[#, 
-       8 Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] - 16 Cos[
-          HoldForm[$CellContext`t1]] 
-        Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + 8 Cos[
-            HoldForm[$CellContext`t1]]^2 
+       8 Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] - (16 Cos[
+           HoldForm[$CellContext`t1]]) 
+        Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + (8 Cos[
+             HoldForm[$CellContext`t1]]^2) 
          Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] - 4 
-        Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + 8 Cos[
-           HoldForm[$CellContext`t1]] 
-         Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 - 4 Cos[
-           HoldForm[$CellContext`t1]]^2 
+        Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + (8 Cos[
+            HoldForm[$CellContext`t1]]) 
+         Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 - (4 Cos[
+            HoldForm[$CellContext`t1]]^2) 
         Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + 
-        4 HoldForm[$CellContext`t1]^2 + 
-        Rational[3, 2] 
-         Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] 
-         HoldForm[$CellContext`t1]^2 + Rational[-3, 2] Cos[
-           HoldForm[$CellContext`t1]] 
-         Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] 
-         HoldForm[$CellContext`t1]^2 - 3 
-        Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] 
-        HoldForm[$CellContext`t1] HoldForm[$CellContext`t2] + 3 Cos[
-           HoldForm[$CellContext`t1]] 
-         Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] 
-         HoldForm[$CellContext`t1] HoldForm[$CellContext`t2] - 8 
-        Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] 
-        HoldForm[$CellContext`t1] Sin[
-          HoldForm[$CellContext`t1]] + 
-        4 Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 Sin[
-            HoldForm[$CellContext`t1]]^2 - 8 Sin[
-          HoldForm[$CellContext`t1]] 
-        Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + 8 Cos[
-           HoldForm[$CellContext`t1]] Sin[
-           HoldForm[$CellContext`t1]] 
-         Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + 
-        Rational[-3, 2] HoldForm[$CellContext`t1]^2 Sin[
-           HoldForm[$CellContext`t1]] 
-         Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + 
-        3 HoldForm[$CellContext`t1] HoldForm[$CellContext`t2] Sin[
-           HoldForm[$CellContext`t1]] 
+        4 HoldForm[$CellContext`t1]^2 + (Rational[3, 2] 
+          Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]) 
+         HoldForm[$CellContext`t1]^2 + ((Rational[-3, 2] Cos[
+             HoldForm[$CellContext`t1]]) 
+          Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]) 
+         HoldForm[$CellContext`t1]^2 - ((3 
+          Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]) 
+         HoldForm[$CellContext`t1]) HoldForm[$CellContext`t2] + (((3 Cos[
+              HoldForm[$CellContext`t1]]) 
+           Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]) 
+          HoldForm[$CellContext`t1]) 
+         HoldForm[$CellContext`t2] - ((8 
+          Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]) 
+         HoldForm[$CellContext`t1]) Sin[
+          HoldForm[$CellContext`t1]] + (4 
+          Cos[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2) Sin[
+            HoldForm[$CellContext`t1]]^2 - (8 Sin[
+           HoldForm[$CellContext`t1]]) 
+        Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + ((8 Cos[
+             HoldForm[$CellContext`t1]]) Sin[
+            HoldForm[$CellContext`t1]]) 
+         Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] + ((
+           Rational[-3, 2] HoldForm[$CellContext`t1]^2) Sin[
+            HoldForm[$CellContext`t1]]) 
+         Sin[HoldForm[$CellContext`t1] - 
+           HoldForm[$CellContext`t2]] + (((3 HoldForm[$CellContext`t1]) 
+           HoldForm[$CellContext`t2]) Sin[
+            HoldForm[$CellContext`t1]]) 
          Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]] - 4 
-        Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + 8 Cos[
-           HoldForm[$CellContext`t1]] 
-         Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 - 4 Cos[
-           HoldForm[$CellContext`t1]]^2 
-        Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + 4 Sin[
-            HoldForm[$CellContext`t1]]^2 
+        Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + (8 Cos[
+            HoldForm[$CellContext`t1]]) 
+         Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 - (4 Cos[
+            HoldForm[$CellContext`t1]]^2) 
+        Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 + (4 Sin[
+             HoldForm[$CellContext`t1]]^2) 
          Sin[HoldForm[$CellContext`t1] - HoldForm[$CellContext`t2]]^2 == 0, 
        "Tooltip"]& ]}], {}},
   AspectRatio->1,
@@ -3260,13 +3261,13 @@ Cell[72565, 2087, 3745, 105, 109, "Output",ExpressionUUID->"2ceb83ab-be1c-491e-8
 Cell[76325, 2195, 180, 4, 30, "Input",ExpressionUUID->"b40e271a-3bd6-4dcf-ad53-6f483a8ca1db"],
 Cell[CellGroupData[{
 Cell[76530, 2203, 1470, 41, 30, "Input",ExpressionUUID->"1ac092f8-3029-4341-998d-b5db08a0a675"],
-Cell[78003, 2246, 23586, 466, 379, "Output",ExpressionUUID->"cbe9c565-ce79-41dc-baa7-2a38156efad0"]
+Cell[78003, 2246, 23688, 467, 379, "Output",ExpressionUUID->"cbe9c565-ce79-41dc-baa7-2a38156efad0"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[101626, 2717, 2850, 73, 89, "Input",ExpressionUUID->"0a1311bb-57f8-4f8a-aef5-fe3b851588e3"],
-Cell[104479, 2792, 945, 24, 50, "Output",ExpressionUUID->"50d396e1-6bbe-462c-bf7b-27aad58365e0"],
-Cell[105427, 2818, 946, 24, 50, "Output",ExpressionUUID->"7ee2300b-c9a6-45b2-bdbe-ca77d7685eb5"],
-Cell[106376, 2844, 19198, 343, 379, "Output",ExpressionUUID->"fda5f26b-c345-46c2-bfb7-17af3c068de1"]
+Cell[101728, 2718, 2850, 73, 89, "Input",ExpressionUUID->"0a1311bb-57f8-4f8a-aef5-fe3b851588e3"],
+Cell[104581, 2793, 945, 24, 50, "Output",ExpressionUUID->"50d396e1-6bbe-462c-bf7b-27aad58365e0"],
+Cell[105529, 2819, 946, 24, 50, "Output",ExpressionUUID->"7ee2300b-c9a6-45b2-bdbe-ca77d7685eb5"],
+Cell[106478, 2845, 19198, 343, 379, "Output",ExpressionUUID->"fda5f26b-c345-46c2-bfb7-17af3c068de1"]
 }, Open  ]]
 }
 ]
