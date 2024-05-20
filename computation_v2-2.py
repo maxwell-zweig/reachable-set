@@ -6,15 +6,17 @@ from scipy.linalg import svd
 from scipy.linalg import expm
 from scipy.linalg import eigh
 import matplotlib.animation as animation
+from spb import *
 
 
-def plot_reachable_sets(A, B, thrusttime, terminaltime, l1):
+def plot_reachable_sets(A, B, thrusttime, terminaltime, l1, integer):
     A = Matrix(A)
     B = Matrix(B)
     theta = Symbol("theta")
     q1 = A @ Matrix([cos(theta), sin(theta)])
     q2 = B @ Matrix([cos(theta), sin(theta)])
 
+    """
     p = plot_parametric(
         (q1[0], q1[1]),
         (q2[0], q2[1]),
@@ -25,6 +27,30 @@ def plot_reachable_sets(A, B, thrusttime, terminaltime, l1):
         title="Impulsive vs Constant Thrust Reachable Sets",
     )
     p.save(f"plots/{round(thrusttime, 3)}tt{round(terminaltime, 3)}{l1}.png")
+    """
+
+    p = graphics(
+        line_parametric_2d(
+            q1[0],
+            q1[1],
+            (theta, 0, 2 * math.pi),
+            use_cm=False,
+            label="Impulsive RRS",
+        ),
+        line_parametric_2d(
+            q2[0],
+            q2[1],
+            (theta, 0, 2 * math.pi),
+            use_cm=False,
+            label="Constant Thrust RRS",
+        ),
+        xlabel="x (meters)",
+        ylabel="y (meters)",
+        legend=True,
+        show=False,
+        title="X-Y Position Relative Reachable Set",
+    )
+    p.save(f"plots/{integer}tt{l1}.png")
 
 
 def phi_calc(A, B, th):
@@ -42,7 +68,7 @@ t2 = 10
 t1 = 0.1
 
 
-def reachable_set_calcs(t2, t1, l1):
+def reachable_set_calcs(t2, t1, l1, i):
     print(f"Computing statistics for terminal time: {t2}, thrust time: {t1}")
 
     STM = lambda t, n: expm(
@@ -83,7 +109,7 @@ def reachable_set_calcs(t2, t1, l1):
     transform_mat_2 = np.array(transform_mat_2).T
 
     # plot_reachable_sets(STM(t2, 1)[0:2, 3:5], (stm[0:2, 0:6] @ itm)[:2, :2] / t1)
-    plot_reachable_sets(transform_mat_1, transform_mat_2, t1, t2, l1)
+    plot_reachable_sets(transform_mat_1, transform_mat_2, t1, t2, l1, i)
 
     phis = np.linspace(0, 2 * math.pi, 628)
     res = [phi_calc(transform_mat_1, transform_mat_2, phi) for phi in phis]
@@ -178,9 +204,9 @@ def plotsaver(terminal_time=4 * math.pi, max_thrust_time=3 * math.pi, num_plots=
 # plotsaver()
 
 
-l1 = [reachable_set_calcs(10, i / 20, "l1") for i in range(1, 200)]
-# l2 = [reachable_set_calcs(2 * np.pi, i / 50, "l2") for i in range(1, 200)]
-# l3 = [reachable_set_calcs(3 * np.pi, i / 40, "l3") for i in range(1, 200)]
+l1 = [reachable_set_calcs(8, i / 20, "l1", i) for i in range(1, 200)]
+l2 = [reachable_set_calcs(10, i / 20, "l2", i) for i in range(1, 200)]
+l3 = [reachable_set_calcs(12, i / 20, "l3", i) for i in range(1, 200)]
 """
 
 val_mins_l1 = [ele[0][0] for ele in l1]
