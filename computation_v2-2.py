@@ -108,8 +108,7 @@ def reachable_set_calcs(t2, t1, l1, i):
     transform_mat_2 = [U_2.T[0] * S_2[0], U_2.T[1] * S_2[1]]
     transform_mat_2 = np.array(transform_mat_2).T
 
-    # plot_reachable_sets(STM(t2, 1)[0:2, 3:5], (stm[0:2, 0:6] @ itm)[:2, :2] / t1)
-    plot_reachable_sets(transform_mat_1, transform_mat_2, t1, t2, l1, i)
+    # plot_reachable_sets(transform_mat_1, transform_mat_2, t1, t2, l1, i)
 
     phis = np.linspace(0, 2 * math.pi, 628)
     res = [phi_calc(transform_mat_1, transform_mat_2, phi) for phi in phis]
@@ -204,10 +203,9 @@ def plotsaver(terminal_time=4 * math.pi, max_thrust_time=3 * math.pi, num_plots=
 # plotsaver()
 
 
-l1 = [reachable_set_calcs(8, i / 20, "l1", i) for i in range(1, 200)]
-l2 = [reachable_set_calcs(10, i / 20, "l2", i) for i in range(1, 200)]
-l3 = [reachable_set_calcs(12, i / 20, "l3", i) for i in range(1, 200)]
-"""
+l1 = [reachable_set_calcs(8, i / 4, "l1", i) for i in range(1, 20)]
+l2 = [reachable_set_calcs(10, i / 4, "l2", i) for i in range(1, 20)]
+l3 = [reachable_set_calcs(12, i / 2, "l3", i) for i in range(1, 20)]
 
 val_mins_l1 = [ele[0][0] for ele in l1]
 val_maxs_l1 = [ele[0][1] for ele in l1]
@@ -227,147 +225,74 @@ theta_min_l3 = [ele[1] for ele in l3]
 theta_max_l3 = [ele[2] for ele in l3]
 
 
-plt.legend()
-plt.xlabel("Time")
-plt.ylabel("Reacahble set min/max Ratios")
-plt.title("Reachable Set min/max Ratios vs t2")
+plt.xlabel("Terminal Time")
+plt.ylabel("Reacahble Set min/max Ratios")
+plt.title("Reachable Set min/max Ratios vs Thrust Time ")
 plt.yscale("log")
 
-plt.plot([i / 10 for i in range(1, 100)], val_mins_l1, label="l1 min")
-plt.plot([i / 10 for i in range(1, 100)], val_maxs_l1, label="l1 max")
+plt.plot([i / 4 for i in range(1, 20)], val_mins_l1, label="l1 min")
+plt.plot([i / 4 for i in range(1, 20)], val_maxs_l1, label="l1 max")
+plt.legend()
+
 plt.savefig("figs/ratiosvstimel1.png")
+plt.clf()
 
-plt.plot([i / 10 for i in range(1, 100)], val_mins_l2, label="l2 min")
-plt.plot([i / 10 for i in range(1, 100)], val_maxs_l2, label="l2 max")
 
-plt.savefig("figs/ratiosvstimel2.png")
-plt.plot([i / 10 for i in range(1, 100)], val_mins_l3, label="l3 min")
-plt.plot([i / 10 for i in range(1, 100)], val_maxs_l3, label="l3 max")
-
-plt.savefig("figs/ratiosvstimel3.png")
-
-plt.figure()
-
-plt.legend()
-plt.xlabel("Time")
-plt.ylabel("Reacahble set min/max thetas")
-plt.title("Reachable Set min/max thetas vs t2")
+plt.xlabel("Terminal Time")
+plt.ylabel("Reacahble Set min/max Ratios")
+plt.title("Reachable Set min/max Ratios vs Thrust Time ")
 plt.yscale("log")
 
+plt.plot([i / 4 for i in range(1, 20)], val_mins_l2, label="l2 min")
+plt.plot([i / 4 for i in range(1, 20)], val_maxs_l2, label="l2 max")
+plt.legend()
+plt.savefig("figs/ratiosvstimel2.png")
+plt.clf()
 
-plt.plot([i / 10 for i in range(1, 100)], theta_min_l1, label="l1 min")
-plt.plot([i / 10 for i in range(1, 100)], theta_max_l1, label="l1 max")
+
+plt.xlabel("Terminal Time")
+plt.ylabel("Reacahble Set min/max Ratios")
+plt.title("Reachable Set min/max Ratios vs Thrust Time ")
+plt.yscale("log")
+
+plt.plot([i / 4 for i in range(1, 20)], val_mins_l3, label="l3 min")
+plt.plot([i / 4 for i in range(1, 20)], val_maxs_l3, label="l3 max")
+plt.legend()
+plt.savefig("figs/ratiosvstimel3.png")
+plt.clf()
+
+
+plt.legend()
+plt.xlabel("Terminal Time")
+plt.ylabel("Reacahble Set min/max Angles")
+plt.title("Reachable Set min/max Angles vs Thrust Time")
+
+
+plt.plot([i / 4 for i in range(1, 20)], theta_min_l1, label="l1 min")
+plt.plot([i / 4 for i in range(1, 20)], theta_max_l1, label="l1 max")
+plt.legend()
 plt.savefig("figs/thetassvstimel1.png")
+plt.clf()
 
 
-plt.plot([i / 10 for i in range(1, 100)], theta_min_l2, label="l2 min")
-plt.plot([i / 10 for i in range(1, 100)], theta_max_l2, label="l2 max")
+plt.legend()
+plt.xlabel("Terminal Time")
+plt.ylabel("Reacahble Set min/max Angles")
+plt.title("Reachable Set min/max Angles vs Thrust Time")
 
+plt.plot([i / 4 for i in range(1, 20)], theta_min_l2, label="l2 min")
+plt.plot([i / 4 for i in range(1, 20)], theta_max_l2, label="l2 max")
+plt.legend()
 plt.savefig("figs/thetassvstimel2.png")
+plt.clf()
 
+plt.legend()
+plt.xlabel("Terminal Time")
+plt.ylabel("Reacahble Set min/max Angles")
+plt.title("Reachable Set min/max Angles vs Thrust Time")
 
-plt.plot([i / 10 for i in range(1, 100)], theta_min_l3, label="l3 min")
-plt.plot([i / 10 for i in range(1, 100)], theta_max_l3, label="l3 max")
-
+plt.plot([i / 4 for i in range(1, 20)], theta_min_l3, label="l3 min")
+plt.plot([i / 4 for i in range(1, 20)], theta_max_l3, label="l3 max")
+plt.legend()
 plt.savefig("figs/thetasvstimel3.png")
-
-"""
-
-"""
-
-
-llist = []
-for j in range(1, 2):
-    varryingt1 = []
-    for i in range(1, 20):
-        if i / 10 > j / 10:
-            stats = reachable_set_calcs(i / 10, j / 10)
-            varryingt1.append(stats)
-    llist.append(varryingt1)
-
-# print(len(llist))
-# print(llist)
-valmins = []
-for j in range(1, 2):
-    varryingt1 = []
-    for i in range(1, 20):
-        if i / 10 > j / 10:
-            listlength = len(llist[j - 1])
-            stats = llist[j - 1][i - (19 - listlength) - 1][0][0]
-            varryingt1.append(stats)
-    valmins.append(varryingt1)
-
-valmaxs = []
-for j in range(1, 2):
-    varryingt1 = []
-    for i in range(1, 20):
-        if i / 10 > j / 10:
-            listlength = len(llist[j - 1])
-            stats = llist[j - 1][i - (19 - listlength) - 1][0][1]
-            varryingt1.append(stats)
-    valmaxs.append(varryingt1)
-
-thetamins = []
-for j in range(1, 2):
-    varryingt1 = []
-    for i in range(1, 20):
-        if i / 10 > j / 10:
-            listlength = len(llist[j - 1])
-            stats = llist[j - 1][i - (19 - listlength) - 1][1]
-            varryingt1.append(stats)
-    thetamins.append(varryingt1)
-
-thetamaxs = []
-for j in range(1, 2):
-    varryingt1 = []
-    for i in range(1, 20):
-        if i / 10 > j / 10:
-            listlength = len(llist[j - 1])
-            stats = llist[j - 1][i - (19 - listlength) - 1][2]
-            varryingt1.append(stats)
-    thetamaxs.append(varryingt1)
-
-The first dimension of each of these lists varies as thrust time varies. The second time varies as final time varies. 
-So since the first dimension of the list has size 9, there are going to be 9 different animations associated with each thrust time. Each animation contains the change in statistics as terminal time varies. 
-fig, ax = plt.subplots()
-ims = []
-for i in range(len(thetamaxs[0])):
-    x = np.linspace(20 - len(thetamaxs[0]), 20, 18)
-    x /= 10
-    print(len(thetamaxs[0]))
-    print(len(x))
-    im = ax.imshow(x, thetamaxs[0], animated=True)
-    if i == 0:
-        ax.imshow(x, thetamaxs[0])  # show an initial one first
-    ims.append([im])
-
-ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True, repeat_delay=1000)
-
-
-# To save the animation, use e.g.
-#
-# ani.save("movie.mp4")
-
-
-for j in range(9):
-
-    plt.legend()
-    plt.xlabel("Time")
-    plt.ylabel("Reacahble set min/max thetas")
-    plt.title("Reachable Set min/max thetas vs t2")
-    plt.yscale("log")
-
-    plt.plot([i / 10 for i in range(1, 100)], thetamins[j], label="l1 min")
-    plt.plot([i / 10 for i in range(1, 100)], thetamaxs[j], label="l1 max")
-    plt.savefig("figs/thetassvsthrusttimel1.png")
-
-    plt.figure()
-    plt.legend()
-    plt.xlabel("Time")
-    plt.ylabel("Reacahble set min/max ratios")
-    plt.title("Reachable Set min/max ratios vs t2")
-    plt.yscale("log")
-
-    plt.plot([i / 10 for i in range(1, 100)], valmins[j], label="l1 min")
-    plt.plot([i / 10 for i in range(1, 100)], valmaxs[j], label="l1 max")
-"""
+plt.clf()
