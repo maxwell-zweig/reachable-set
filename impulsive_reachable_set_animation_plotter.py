@@ -82,5 +82,6 @@ def plotsaver(title, terminal_time=.75 * 2 * math.pi, max_thrust_time=.1 * 2 * m
         
 plotsaver("1.6rev", 1.6*2*math.pi, .1*2*math.pi, 50)
 plotsaver("1.1rev", 1.1*2*math.pi, .1*2*math.pi, 50)
+plotsaver("0.25rev", .25*2*math.pi, .1*2*math.pi, 50)
 
 #plot_reachable_sets_matplotlib(np.identity(3), [2.*np.identity(2), 3.*np.identity(2)])

@@ -55,18 +55,53 @@ def reachable_set_calcs(t2, t1):
 
     v0 = v[:, 0]
     v1 = v[:, 1]
-    # print(np.sqrt(w))
-    # print(v0, v1)
 
-    t0 = np.arctan2(v0[1], v0[0])
-    t1 = np.arctan2(v1[1], v1[0])
+    print(np.linalg.inv(aT) @ np.linalg.inv(a_) @ v0 / np.linalg.norm(np.linalg.inv(aT) @ np.linalg.inv(a_) @ v0))
+    print(np.linalg.inv(bT) @ np.linalg.inv(b_) @ v0 / np.linalg.norm(np.linalg.inv(bT) @ np.linalg.inv(b_) @ v0))
 
-    # print(t0, t1)
-    #
-    #   plt.plot(phis, res)
-    #   plt.axvline(x=t0)
-    #   plt.axvline(x=t1)
-    #   plt.show()
-    #   print()
-    return np.sqrt(w), t0, t1
-print(reachable_set_calcs(1.1*2.*np.pi, .1*2.*np.pi))
+    print(np.linalg.inv(aT) @ np.linalg.inv(a_) @ v1 / np.linalg.norm(np.linalg.inv(aT) @ np.linalg.inv(a_) @ v1))
+    print(np.linalg.inv(bT) @ np.linalg.inv(b_) @ v1 / np.linalg.norm(np.linalg.inv(bT) @ np.linalg.inv(b_) @ v1))
+
+    theta0 = np.arctan(v0[1]/v0[0])
+    theta1 = np.arctan(v1[1]/v1[0])
+
+    return np.sqrt(w), theta0, theta1
+print(reachable_set_calcs(.25*2.*np.pi, .00001*2.*np.pi))
+
+dt = .00001*2.*np.pi
+tofs = np.linspace(.1*2.*np.pi, 2.01*2*np.pi,100)
+derivative1 = []
+derivative2 = []
+angle1 = []
+angle2 = [] 
+for tof in tofs:
+    ratios, theta1, theta2 = reachable_set_calcs(tof, dt)
+    derivative1.append((ratios[0]-1.)/dt)
+    derivative2.append((ratios[1]-1.)/dt)
+    angle1.append(theta1)
+    angle2.append(theta2)
+
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.plot(tofs, derivative1, label="Ratio 1", linewidth=4)
+ax.plot(tofs, derivative2, label="Ratio 2", linewidth=4)
+ax.legend(fontsize=12)
+ax.set_xlabel("Time of Flight (rad)", fontsize=18)
+ax.tick_params(axis="y", labelsize=16)
+ax.tick_params(axis="x", labelsize=16)
+ax.set_ylabel("Ratio Time Derivative (1/rad)", fontsize=18)
+ax.set_ylim([-5, 5])
+plt.plot(tofs, np.zeros(len(tofs)), linestyle="dashed", color="gray")
+plt.savefig(f"plots/derivatives_plot.png")
+plt.close()
+
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.plot(tofs, angle1, label="Ratio 1", linewidth=4)
+ax.plot(tofs, angle2, label="Ratio 2", linewidth=4)
+ax.legend(fontsize=12)
+ax.set_xlabel("Time of Flight (rad)", fontsize=18)
+ax.tick_params(axis="y", labelsize=16)
+ax.tick_params(axis="x", labelsize=16)
+ax.set_ylabel("Angle (rad)", fontsize=18)
+plt.savefig(f"plots/angles_plot.png")
+plt.close()
+
