@@ -100,7 +100,7 @@ def reachable_set_calcs(t2, t1):
     return np.sqrt(w),np.sqrt(w1),np.sqrt(w2),np.sqrt(w3) 
 print(reachable_set_calcs(.25*2.*np.pi, .00001*2.*np.pi))
 
-dt = .01*2.*np.pi
+dt = .05*2.*np.pi
 tofs = np.linspace(.1*2.*np.pi, 2.01*2*np.pi,100)
 derivative1 = []
 derivative2 = []
@@ -137,6 +137,18 @@ colors = cycle(prop_cycle.by_key()['color'])
 col = next(colors)
 ax.plot(tofs, np.array(derivative31)*dt+1, label="ECI Centered", linewidth=4, color=col)
 ax.plot(tofs, np.array(derivative32)*dt+1, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(derivative11)*dt+1, label="ECI", linewidth=4, color=col)
+ax.plot(tofs, np.array(derivative12)*dt+1, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(derivative21)*dt+1, label="RIC Centered", linewidth=4, color=col)
+ax.plot(tofs, np.array(derivative22)*dt+1, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(derivative1)*dt+1, label="RIC", linewidth=4, color=col)
+ax.plot(tofs, np.array(derivative2)*dt+1, linewidth=4, color=col)
 print(derivative31)
 print(derivative32)
 ax.legend(fontsize=12)
@@ -144,7 +156,7 @@ ax.set_xlabel("Time of Flight (rad)", fontsize=18)
 ax.tick_params(axis="y", labelsize=16)
 ax.tick_params(axis="x", labelsize=16)
 ax.set_ylabel("Ratio Time Derivative (1/rad)", fontsize=18)
-ax.set_ylim([-5, 5])
+ax.set_ylim([0, 2])
 plt.plot(tofs, np.ones(len(tofs)), linestyle="dashed", color="gray")
 plt.savefig(f"plots/derivatives_plot.png")
 plt.close()

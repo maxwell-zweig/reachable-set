@@ -59,11 +59,13 @@ def plot_reachable_sets_matplotlib(As, Bs, Cs, Ds, Es, title):
         Dreachable = Ds[j][:2,:2] @ vecs
         Ereachable = Es[j][:2,:2] @ vecs
         fig, ax = plt.subplots(figsize=(8, 6))
-        ax.plot(Areachable[1], Areachable[0], label="Impulsive", linewidth=4)
+        
         ax.plot(Ereachable[1], Ereachable[0], label="Constant Thrust - ECI Centered ",linewidth=4)
         ax.plot(Creachable[1], Creachable[0], label="Constant Thrust - ECI",linewidth=4)
         ax.plot(Dreachable[1], Dreachable[0], label="Constant Thrust - RIC Centered",linewidth=4)
         ax.plot(Breachable[1], Breachable[0], label="Constant Thrust - RIC",linewidth=4)
+        
+        ax.plot(Areachable[1], Areachable[0], label="Impulsive", linewidth=4)
         
         ax.legend(fontsize=12)
         ax.set_xlabel("y (in-track)", fontsize=18)
