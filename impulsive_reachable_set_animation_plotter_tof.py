@@ -97,7 +97,7 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
             f"Computing statistics for terminal time: {cur_terminal_time}, thrust time: {thrust_time}"
         )
 
-        STM = lambda t, n: expm(
+        """STM = lambda t, n: expm(
             [
                 [0, 0, 0, 1 * t, 0, 0],
                 [0, 0, 0, 0, 1 * t, 0],
@@ -106,9 +106,16 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
                 [0, 0, 0, -2 * n * t, 0, 0],
                 [0, 0, -t * n**2, 0, 0, 0],
             ]
-        )
+        )"""
+        STM = lambda t, n: [[4 - 3 * np.cos(n * t), 0, 0, np.sin(n * t)/n, 2/n - (2 * np.cos(n * t))/n, 
+  0], [-6 * n * t + 6 * np.sin(n * t), 1, 
+  0, -(2/n) + (2 * np.cos(n * t))/n, -3 * t + (4 * np.sin(n * t))/n, 0], [0, 0, 
+  np.cos(n * t), 0, 0, np.sin(n * t)/n], [3 * n * np.sin(n * t), 0, 0, np.cos(n * t), 
+  2 * np.sin(n * t), 0], [-6 * n + 6 * n * np.cos(n * t), 0, 
+  0, -2 * np.sin(n * t), -3 + 4 * np.cos(n * t), 0], [0, 0, -n * np.sin(n * t), 0, 0, 
+  np.cos(n * t)]]
 
-        ITM = lambda t, n: [
+        """ITM = lambda t, n: [
             [(1 - np.cos(t * n)) / n**2, -2 * (-t * n + np.sin(t * n)) / n**2, 0],
             [
                 2 * (-t * n + np.sin(t * n)) / n**2,
@@ -119,10 +126,15 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
             [np.sin(t * n) / n, 2 * (-1 + np.cos(t * n)) / n, 0],
             [2 * (-1 + np.cos(t * n)) / n, -3 * t + 4 * np.sin(t * n) / n, 0],
             [0, 0, np.sin(t * n) / n],
-        ]
+        ]"""
+        ITM = lambda t, n: [[(1 - np.cos(n * t))/n**2, (2 * n * t - 2 * np.sin(n * t))/n**2, 0], [(
+  2 * (-n * t + np.sin(n * t)))/n**2, -((3 * t**2)/2) + (4 - 4 * np.cos(n * t))/n**2, 
+  0], [0, 0, (1 - np.cos(n * t))/n**2], [np.sin(n * t)/n, (2 - 2 * np.cos(n * t))/n, 
+  0], [(2 * (-1 + np.cos(n * t)))/n, -3 * t + (4 * np.sin(n * t))/n, 0], [0, 0, 
+  np.sin(n * t)/n]]
         
         
-        ITM_ECI = lambda t, n: [[((-1 + 3 * np.cos(n * t)) * np.sin((n * t)/2)**2)/
+        """ITM_ECI_old = lambda t, n: [[((-1 + 3 * np.cos(n * t)) * np.sin((n * t)/2)**2)/
               n**2, -((2 * n * t - 8 * np.sin(n * t) + 3 * np.sin(2 * n * t))/(4 * n**2)), 
               0], [((1 + 3 * np.cos(n * t)) * (-1 * n * t + np.sin(n * t)))/n**2, (
               1 - np.cos(n * t) - 3 * n * t * np.sin(n * t) + 3 * np.sin(n * t)**2)/n**2, 0], [0, 0, (
@@ -131,7 +143,7 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
               n * t - 3 * np.sin(n * t) + 3/2 * np.sin(2 * n * t))/n, 0], [0, 0, np.sin(n * t)/n]
         ]
         
-        ITM_ECI_centered = lambda t, n: [[(np.sin((n * t)/2) * (-n * t + 3 * np.sin(n * t)))/(2 * n**2), (
+        ITM_ECI_centered_old = lambda t, n: [[(np.sin((n * t)/2) * (-n * t + 3 * np.sin(n * t)))/(2 * n**2), (
               8 * np.sin((n * t)/2) - np.cos((n * t)/2) * (n * t + 3 * np.sin(n * t)))/(2 * n**2), 
               0], [(-8 * n * t * np.cos((n * t)/2) + 7 * np.sin((n * t)/2) + 3 * np.sin((3 * n * t)/2))/(
               2 * n**2), (np.sin((n * t)/2) * (-2 * n * t + 3 * np.sin(n * t)))/n**2, 0], [0, 0, (
@@ -140,6 +152,36 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
               np.sin((n * t)/2) * (n * t - 3 * np.sin(n * t)))/n, 
               t * np.cos((n * t)/2) - (6 * np.sin((n * t)/2)**3)/n, 0], [0, 0, np.sin(n * t)/n]
         ]
+
+        ITM_ECI_centered = lambda t, n: [[-((np.sin(n * t/2) * (-3 * n * t + np.sin(n * t)))/(2 * n ** 2)), -((
+   3 * n * t * np.cos(n * t/2) + (-7 + np.cos(n * t)) * np.sin(n * t/2))/(2 * n**2)), 
+  0], [-((-12 * n * t * np.cos(n * t/2) + 21 * np.sin(n * t/2) + 
+    np.sin((3 * n * t)/2))/(2 * n**2)), (np.sin(n * t/2) * np.sin(n * t))/n**2, 0], [0, 
+  0, (1 - np.cos(n * t))/
+  n**2], [-((np.cos(n * t/2) * (-3 * n * t + np.sin(n * t)))/(2 * n)), (
+  np.sin(n * t/2) * (3 * n * t + np.sin(n * t)))/(2 * n), 0], [(
+  np.sin(n * t/2) * (-3 * n * t + np.sin(n * t)))/n, (
+  6 * n * t * np.cos(n * t/2) - 11 * np.sin(n * t/2) + np.sin(3 * n * t)/2)/(2 * n), 
+  0], [0, 0, np.sin(n * t)/n]]"""
+
+        ITM_ECI_centered = lambda t, n: [[-((np.sin(n * t / 2) * (-3 * n * t + np.sin(n * t)))/(2 * n**2)), (
+  8 * np.sin(n * t / 2) - np.cos(n * t / 2) * (3 * n * t + np.sin(n * t)))/(2 * n**2), 
+  0], [-((-12 * n * t * np.cos(n * t / 2) + 21 * np.sin(n * t / 2) + 
+    np.sin(3 * n * t / 2))/(2 * n**2)), (np.sin(n * t / 2) * np.sin(n * t))/n**2, 0], [0, 
+  0, (1 - np.cos(n * t))/
+  n**2], [-((np.cos(n * t / 2) * (-3 * n * t + np.sin(n * t)))/(2 * n)), (
+  np.sin(n * t / 2) * (3 * n * t + np.sin(n * t)))/(2 * n), 0], [(
+  np.sin(n * t / 2) * (-3 * n * t + np.sin(n * t)))/n, (
+  6 * n * t * np.cos(n * t / 2) - 11 * np.sin(n * t / 2) + np.sin(3 * n * t / 2))/(2 * n), 
+  0], [0, 0, np.sin(n * t)/n]]
+        
+        ITM_ECI = lambda t, n: [[(-4 + 4 * np.cos(n * t) + 3 * n * t * np.sin(n * t))/(
+  2 * n**2), -((3 * (n * t * np.cos(n * t) - np.sin(n * t)))/(2 * n**2)), 0], [(
+  3 * (n * t + n * t * np.cos(n * t) - 2 * np.sin(n * t)))/
+  n**2, (-5 + 5 * np.cos(n * t) + 3 * n * t * np.sin(n * t))/n**2, 0], [0, 0, (
+  1 - np.cos(n * t))/n**2], [3/2 * t * np.cos(n * t) - np.sin(n * t)/(2 * n), 
+  3/2 * t * np.sin(n * t), 0], [-((3 * (-1 + np.cos(n * t) + n * t * np.sin(n * t)))/n), 
+  3 * t * np.cos(n * t) - (2 * np.sin(n * t))/n, 0], [0, 0, np.sin(n * t)/n]]
 
         itm = np.array(ITM(thrust_time, 1))
         stm = np.array(STM(cur_terminal_time - thrust_time, 1))
@@ -150,7 +192,7 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
         itmsECI.append((stm[0:2, 0:6] @ np.array(ITM_ECI(thrust_time, 1)))[:2, :2] / thrust_time)
         itmsECICentered.append((stm_half[0:2, 0:6] @ np.array(ITM_ECI_centered(thrust_time, 1)))[:2, :2] / thrust_time)
 
-        stm = STM(cur_terminal_time, 1)[0:2, 3:5]
+        stm = np.array(STM(cur_terminal_time, 1))[0:2, 3:5]
         stms.append(stm)
     #plot_reachable_sets_matplotlib(stms, itmsRIC, title + "RIC")
     #plot_reachable_sets_matplotlib(stms, itmsRICCentered, title + "RICCentered")
