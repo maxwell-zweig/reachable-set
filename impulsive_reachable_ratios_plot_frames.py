@@ -136,12 +136,27 @@ def reachable_set_calcs(t2, t1):
         np.linalg.inv(aT) @ np.linalg.inv(a_), np.linalg.inv(eT) @ np.linalg.inv(e_)
     )
 
+    _, impulse_sing, _ = np.linalg.svd(a_)
+    _, ric_sing, _ = np.linalg.svd(b_)
+    _, eci_sing, _ = np.linalg.svd(c_)
+    _, ric_center_sing, _ = np.linalg.svd(d_)
+    _, eci_center_sing, _ = np.linalg.svd(e_)
+    minImpulse = impulse_sing[1]
+    minECI = eci_sing[1]
+    minECICentered = eci_center_sing[1]
+    minRIC = ric_sing[1]
+    minRICCentered = ric_center_sing[1]
+    maxImpulse = impulse_sing[0]
+    maxECI = eci_sing[0]
+    maxECICentered = eci_center_sing[0]
+    maxRIC = ric_sing[0]
+    maxRICCentered = ric_center_sing[0]
 
-    return np.sqrt(w),np.sqrt(w1),np.sqrt(w2),np.sqrt(w3) 
-print(reachable_set_calcs(.25*2.*np.pi, .00001*2.*np.pi))
+    return np.sqrt(w),np.sqrt(w1),np.sqrt(w2),np.sqrt(w3), minImpulse, minECI, minECICentered, minRIC, minRICCentered, maxImpulse, maxECI, maxECICentered, maxRIC, maxRICCentered
+print(reachable_set_calcs(.25*2.*np.pi, .05*2.*np.pi))
 
-dt = .001*2.*np.pi
-tofs = np.linspace(.1*2.*np.pi, 2.01*2*np.pi,100)
+dt = .05*2.*np.pi
+tofs = np.linspace(.1*2.*np.pi, 2.01*2*np.pi,300)
 derivative1 = []
 derivative2 = []
 derivative11 = []
@@ -150,8 +165,18 @@ derivative21 = []
 derivative22 = []
 derivative31 = []
 derivative32 = []
+minImpulses = []
+minECIs = []
+minECICentereds = []
+minRICs = []
+minRICCentereds = []
+maxImpulses = []
+maxECIs = []
+maxECICentereds = []
+maxRICs = []
+maxRICCentereds = []
 for tof in tofs:
-    ratios, ratios1, ratios2, ratios3 = reachable_set_calcs(tof, dt)
+    ratios, ratios1, ratios2, ratios3, minImpulse, minECI, minECICentered, minRIC, minRICCentered, maxImpulse, maxECI, maxECICentered, maxRIC, maxRICCentered = reachable_set_calcs(tof, dt)
     derivative1.append((ratios[0]-1.)/dt)
     derivative2.append((ratios[1]-1.)/dt)
     derivative11.append((ratios1[0]-1.)/dt)
@@ -160,6 +185,17 @@ for tof in tofs:
     derivative22.append((ratios2[1]-1.)/dt)
     derivative31.append((ratios3[0]-1.)/dt)
     derivative32.append((ratios3[1]-1.)/dt)
+    minImpulses.append(minImpulse)
+    minECIs.append(minECI)
+    minECICentereds.append(minECICentered)
+    minRICs.append(minRIC)
+    minRICCentereds.append(minECICentered)
+    maxImpulses.append(maxImpulse)
+    maxECIs.append(maxECI)
+    maxECICentereds.append(maxECICentered)
+    maxRICs.append(maxRIC)
+    maxRICCentereds.append(maxRICCentered)
+
 
 
 
@@ -191,8 +227,8 @@ ax.plot(tofs, np.array(derivative22)*dt+1, linewidth=4, color=col)
 col = next(colors)
 ax.plot(tofs, np.array(derivative1)*dt+1, label="RIC", linewidth=4, color=col)
 ax.plot(tofs, np.array(derivative2)*dt+1, linewidth=4, color=col)
-print(derivative31)
-print(derivative32)
+# print(derivative31)
+# print(derivative32)
 
 
 
@@ -204,13 +240,252 @@ ax.set_xlabel("Time of Flight (periods)", fontsize=18)
 ax.tick_params(axis="y", labelsize=16)
 ax.tick_params(axis="x", labelsize=16)
 ax.set_ylabel("Ratio to Impulsive RRS", fontsize=18)
-ax.set_ylim([.8, 1.2])
+ax.set_ylim([.7, 1.3])
 #ax.set_ylim([.95, 1.05])
 plt.plot(tofs, np.ones(len(tofs)), linestyle="dashed", color="gray")
-plt.savefig(f"plots/varying_tof_plot.png")
+plt.savefig(f"plots/varying_tof_plot.png", bbox_inches='tight')
 plt.close()
 
-print(np.array(derivative31)*dt+1)
-print(np.array(derivative32)*dt+1)
 
 
+
+
+fig, ax = plt.subplots(figsize=(8, 6))
+plt.style.use("seaborn-v0_8-colorblind")
+
+prop_cycle = plt.rcParams['axes.prop_cycle']
+colors = cycle(prop_cycle.by_key()['color'])
+
+#ax.plot(tofs, derivative1, label="RIC", linewidth=4)
+#ax.plot(tofs, derivative2, label="RIC", linewidth=4)
+#ax.plot(tofs, derivative11, label="ECI", linewidth=4)
+#ax.plot(tofs, derivative12, label="ECI", linewidth=4)
+#ax.plot(tofs, derivative21, label="RIC Centered", linewidth=4)
+#ax.plot(tofs, derivative22, label="RIC Centered", linewidth=4)
+tofs = tofs / 2. / np.pi
+col = next(colors)
+ax.plot(tofs, np.array(derivative31)*dt+1, label="ECI Centered", linewidth=4, color=col)
+ax.plot(tofs, np.array(derivative32)*dt+1, linewidth=4, color=col)
+
+col = next(colors)
+#ax.plot(tofs, np.array(derivative11)*dt+1, label="ECI", linewidth=4, color=col)
+#ax.plot(tofs, np.array(derivative12)*dt+1, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(derivative21)*dt+1, label="RIC Centered", linewidth=4, color=col)
+ax.plot(tofs, np.array(derivative22)*dt+1, linewidth=4, color=col)
+
+col = next(colors)
+#ax.plot(tofs, np.array(derivative1)*dt+1, label="RIC", linewidth=4, color=col)
+#ax.plot(tofs, np.array(derivative2)*dt+1, linewidth=4, color=col)
+# print(derivative31)
+# print(derivative32)
+
+
+
+
+
+
+ax.legend(fontsize=12)
+ax.set_xlabel("Time of Flight (periods)", fontsize=18)
+ax.tick_params(axis="y", labelsize=16)
+ax.tick_params(axis="x", labelsize=16)
+ax.set_ylabel("Ratio to Impulsive RRS", fontsize=18)
+#ax.set_ylim([.7, 1.3])
+ax.set_ylim([.95, 1.05])
+plt.plot(tofs, np.ones(len(tofs)), linestyle="dashed", color="gray")
+plt.savefig(f"plots/varying_tof_plot_centered.png", bbox_inches='tight')
+plt.close()
+
+
+
+
+
+
+
+
+
+
+
+
+# plot the bounds of each one
+fig, ax = plt.subplots(figsize=(8, 6))
+plt.style.use("seaborn-v0_8-colorblind")
+
+prop_cycle = plt.rcParams['axes.prop_cycle']
+colors = cycle(prop_cycle.by_key()['color'])
+
+
+col = next(colors)
+ax.plot(tofs, minECICentereds, label="ECI Centered", linewidth=4, color=col)
+ax.plot(tofs, maxECICentereds, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, minECIs, label="ECI", linewidth=4, color=col)
+ax.plot(tofs, maxECIs, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, minRICCentereds, label="RIC Centered", linewidth=4, color=col)
+ax.plot(tofs, maxRICCentereds, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, minRICs, label="RIC", linewidth=4, color=col)
+ax.plot(tofs, maxRICs, linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, minImpulses, label="Impulsive", linewidth=4, color=col)
+ax.plot(tofs, maxImpulses, linewidth=4, color=col)
+
+ax.legend(fontsize=12)
+ax.set_xlabel("Time of Flight (periods)", fontsize=18)
+ax.tick_params(axis="y", labelsize=16)
+ax.tick_params(axis="x", labelsize=16)
+ax.set_ylabel("RRS Min/Max (DU)", fontsize=18)
+plt.plot(tofs, np.zeros(len(tofs)), linestyle="dashed", color="gray")
+
+plt.savefig(f"plots/varying_tof_plot_sing.png", bbox_inches='tight')
+plt.close()
+
+# plot the bounds of each one relative to the impulsive case
+
+
+
+
+# plot the bounds of each one
+fig, ax = plt.subplots(figsize=(8, 6))
+plt.style.use("seaborn-v0_8-colorblind")
+
+prop_cycle = plt.rcParams['axes.prop_cycle']
+colors = cycle(prop_cycle.by_key()['color'])
+
+
+col = next(colors)
+ax.plot(tofs, np.array(minECICentereds)-np.array(minImpulses), label="ECI Centered", linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(minECIs)-np.array(minImpulses), label="ECI", linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(minRICCentereds)-np.array(minImpulses), label="RIC Centered", linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(minRICs)-np.array(minImpulses), label="RIC", linewidth=4, color=col)
+
+
+ax.legend(fontsize=12)
+ax.set_xlabel("Time of Flight (periods)", fontsize=18)
+ax.tick_params(axis="y", labelsize=16)
+ax.tick_params(axis="x", labelsize=16)
+ax.set_ylabel("RRS Min vs Impulsive Min (DU)", fontsize=18)
+plt.plot(tofs, np.zeros(len(tofs)), linestyle="dashed", color="gray")
+
+plt.savefig(f"plots/varying_tof_plot_sing_min_dif.png", bbox_inches='tight')
+plt.close()
+
+
+
+# plot the bounds of each one
+fig, ax = plt.subplots(figsize=(8, 6))
+plt.style.use("seaborn-v0_8-colorblind")
+
+prop_cycle = plt.rcParams['axes.prop_cycle']
+colors = cycle(prop_cycle.by_key()['color'])
+
+
+col = next(colors)
+ax.plot(tofs, np.array(maxECICentereds)-np.array(maxImpulses), label="ECI Centered", linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(maxECIs)-np.array(maxImpulses), label="ECI", linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(maxRICCentereds)-np.array(maxImpulses), label="RIC Centered", linewidth=4, color=col)
+
+col = next(colors)
+ax.plot(tofs, np.array(maxRICs)-np.array(maxImpulses), label="RIC", linewidth=4, color=col)
+
+
+ax.legend(fontsize=12)
+ax.set_xlabel("Time of Flight (periods)", fontsize=18)
+ax.tick_params(axis="y", labelsize=16)
+ax.tick_params(axis="x", labelsize=16)
+ax.set_ylabel("RRS Max vs Impulsive Min (DU)", fontsize=18)
+
+plt.plot(tofs, np.zeros(len(tofs)), linestyle="dashed", color="gray")
+
+plt.savefig(f"plots/varying_tof_plot_sing_max_dif.png", bbox_inches='tight')
+plt.close()
+
+
+
+
+
+
+
+
+
+
+# # plot the bounds of each one
+# fig, ax = plt.subplots(figsize=(8, 6))
+# plt.style.use("seaborn-v0_8-colorblind")
+
+# prop_cycle = plt.rcParams['axes.prop_cycle']
+# colors = cycle(prop_cycle.by_key()['color'])
+
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(minECICentereds)-np.array(minImpulses))/np.array(minImpulses), label="ECI Centered", linewidth=4, color=col)
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(minECIs)-np.array(minImpulses))/np.array(minImpulses), label="ECI", linewidth=4, color=col)
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(minRICCentereds)-np.array(minImpulses))/np.array(minImpulses), label="RIC Centered", linewidth=4, color=col)
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(minRICs)-np.array(minImpulses))/np.array(minImpulses), label="RIC", linewidth=4, color=col)
+
+
+# ax.legend(fontsize=12)
+# ax.set_xlabel("Time of Flight (periods)", fontsize=18)
+# ax.tick_params(axis="y", labelsize=16)
+# ax.tick_params(axis="x", labelsize=16)
+# ax.set_ylabel("RRS Min Difference from Impulsive (DU)", fontsize=18)
+# plt.plot(tofs, np.zeros(len(tofs)), linestyle="dashed", color="gray")
+
+# plt.savefig(f"plots/varying_tof_plot_sing_min_dif_norm.png", bbox_inches='tight')
+# plt.close()
+
+
+
+# # plot the bounds of each one
+# fig, ax = plt.subplots(figsize=(8, 6))
+# plt.style.use("seaborn-v0_8-colorblind")
+
+# prop_cycle = plt.rcParams['axes.prop_cycle']
+# colors = cycle(prop_cycle.by_key()['color'])
+
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(maxECICentereds)-np.array(maxImpulses))/np.array(maxImpulses), label="ECI Centered", linewidth=4, color=col)
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(maxECIs)-np.array(maxImpulses))/np.array(maxImpulses), label="ECI", linewidth=4, color=col)
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(maxRICCentereds)-np.array(maxImpulses))/np.array(maxImpulses), label="RIC Centered", linewidth=4, color=col)
+
+# col = next(colors)
+# ax.plot(tofs, (np.array(maxRICs)-np.array(maxImpulses))/np.array(maxImpulses), label="RIC", linewidth=4, color=col)
+
+
+# ax.legend(fontsize=12)
+# ax.set_xlabel("Time of Flight (periods)", fontsize=18)
+# ax.tick_params(axis="y", labelsize=16)
+# ax.tick_params(axis="x", labelsize=16)
+# ax.set_ylabel("RRS Max Difference from Impulsive (DU)", fontsize=18)
+
+# plt.plot(tofs, np.zeros(len(tofs)), linestyle="dashed", color="gray")
+
+# plt.savefig(f"plots/varying_tof_plot_sing_max_dif_norm.png", bbox_inches='tight')
+# plt.close()

@@ -201,6 +201,6 @@ def plotsaver(title, max_terminal_time=2 * 2 * math.pi, thrust_time=.01 * 2 * ma
     plot_reachable_sets_matplotlib(stms, itmsRIC, itmsECI, itmsRICCentered, itmsECICentered, title + "ECICentered")
     
         
-plotsaver("2rev", 2*2*math.pi, .1*2*math.pi, 100)
+plotsaver("2rev", 2*2*math.pi, .25*2*math.pi, 100)
 
 #plot_reachable_sets_matplotlib(np.identity(3), [2.*np.identity(2), 3.*np.identity(2)])
