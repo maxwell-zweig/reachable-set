@@ -1,0 +1,486 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     21156,        478]
+NotebookOptionsPosition[     20796,        464]
+NotebookOutlinePosition[     21196,        480]
+CellTagsIndexPosition[     21153,        477]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"solveBVPsAdaptive", "[", 
+   RowBox[{
+   "initialAngle_", ",", " ", "initialGuess_", ",", " ", "endTime_", ",", " ",
+     "tmax_", ",", " ", "n_", ",", " ", "m0_", ",", " ", "A_", ",", " ", 
+    "fuelpercent_", ",", " ", "isp_", ",", " ", "defaultNumPoints_"}], "]"}], 
+  " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"(*", 
+     RowBox[{
+      RowBox[{"*", " ", "if", " ", "convergence", " ", "fails"}], ",", " ", 
+      RowBox[{
+      "half", " ", "the", " ", "step", " ", "size", " ", "and", " ", "try", " ", 
+       RowBox[{"again", ".", " ", "otherwise"}]}], ",", " ", 
+      RowBox[{
+      "if", " ", "5", " ", "converges", " ", "in", " ", "a", " ", "row"}], ",",
+       " ", 
+      RowBox[{
+      "double", " ", "the", " ", "step", " ", "size", " ", "and", " ", 
+       "reset", " ", "the", " ", "number", " ", "of", " ", 
+       RowBox[{"convergences", ".", " ", "Limit"}], " ", "the", " ", 
+       "minimum", " ", "density", " ", "to", " ", 
+       RowBox[{"defaulNumPoints", "."}]}]}], "\[IndentingNewLine]", "**)"}], 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"Print", "[", 
+      RowBox[{
+      "initialAngle", ",", " ", "\"\< \>\"", ",", "  ", "initialGuess", ",", 
+       " ", "\"\< \>\"", ",", " ", "endTime", ",", " ", "\"\< \>\"", ",", " ",
+        "tmax", ",", " ", "\"\< \>\"", ",", " ", "n", ",", " ", "\"\< \>\"", ",",
+        " ", "m0", ",", " ", "\"\< \>\"", ",", " ", "A", ",", " ", "\"\< \>\"",
+        ",", " ", "fuelpercent", ",", " ", "\"\< \>\"", ",", " ", "isp", ",", 
+       " ", "\"\< \>\"", ",", " ", "defaultNumPoints"}], "]"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"prevAngle", " ", "=", " ", 
+      RowBox[{"initialAngle", " ", "+", " ", 
+       RowBox[{"2", " ", 
+        RowBox[{"Pi", " ", "/", " ", "defaultNumPoints"}]}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"prevCostate", " ", "=", " ", "initialGuess"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"prevPosition", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+       "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], 
+       "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"numConvergences", " ", "=", " ", "0"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"curTotalPoints", " ", "=", " ", "defaultNumPoints"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"anglearrs", " ", "=", " ", 
+      RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"costatearrs", " ", "=", " ", 
+      RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"positionarrs", " ", "=", " ", 
+      RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"massarrs", " ", "=", " ", 
+      RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"While", "[", 
+      RowBox[{
+       RowBox[{"prevAngle", " ", "<=", " ", 
+        RowBox[{"initialAngle", " ", "+", " ", 
+         RowBox[{"2", " ", "Pi"}]}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+         RowBox[{"*", " ", "loop", " ", "invariant", " ", "numConvergences"}],
+          " ", "<=", " ", 
+         RowBox[{
+         "5.", " ", "Halving", " ", "the", " ", "step", " ", "size", " ", 
+          "when", " ", 
+          RowBox[{"needed", "."}]}]}], " ", "**)"}], "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"Print", "[", 
+         RowBox[{"prevAngle", "//", " ", "N"}], "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"numConvergences", ",", " ", "curTotalPoints"}], " ", "}"}],
+          "=", " ", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"numConvergences", " ", "==", "5"}], " ", "&&", " ", 
+            RowBox[{"curTotalPoints", " ", ">=", " ", 
+             RowBox[{"2", " ", "defaultNumPoints"}]}]}], ",", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"Print", "[", "\"\<sampling density halved\>\"", "]"}], ";", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", " ", 
+               RowBox[{"curTotalPoints", " ", "/", " ", "2"}]}], "}"}]}], " ",
+             ")"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"numConvergences", ",", " ", "curTotalPoints"}], "}"}]}], 
+          " ", "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"targetAngle", " ", "=", " ", 
+         RowBox[{"prevAngle", " ", "+", " ", 
+          RowBox[{"2", " ", 
+           RowBox[{"Pi", " ", "/", " ", "curTotalPoints"}]}]}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"targetDirection", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Cos", "[", "targetAngle", "]"}], ",", " ", 
+            RowBox[{"Sin", "[", "targetAngle", "]"}]}], "}"}], " ", "//", " ",
+           "N"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"lxm2", " ", "=", " ", 
+         RowBox[{"rootfind", "[", 
+          RowBox[{"prevCostate", ",", "  ", 
+           RowBox[{"tmax", " ", "fuelpercent", " ", 
+            RowBox[{"endTime", " ", "/", " ", "isp"}]}], ",", " ", 
+           "targetDirection", ",", " ", "A", ",", " ", "m0", ",", " ", "isp", 
+           ",", " ", "endTime", ",", " ", "tmax"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"out", "=", " ", 
+         RowBox[{"propStateCostatev2", "[", 
+          RowBox[{
+           RowBox[{"Join", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+              "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", 
+               "m0"}], "}"}], ",", "   ", 
+             RowBox[{"Join", "[", 
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"lxm2", "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+                  RowBox[{"lxm2", "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], ",", " ", "0"}], "}"}], ",",
+                 " ", 
+                RowBox[{
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"v4", ",", " ", "v5"}], "}"}], " ", "/.", " ", 
+                   "subs"}], " ", ")"}], " ", "/.", " ", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"v1", "->", 
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], ",", " ", 
+                   RowBox[{"v2", " ", "->", 
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}]}], "}"}]}], ",", " ", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", " ", 
+                  RowBox[{"lxm2", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "]"}], "]"}]}], 
+            "]"}], ",", " ", "isp", ",", " ", "endTime", ",", " ", "tmax", ",",
+            " ", "A"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"terminalDirection", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"out", "[", 
+           RowBox[{"[", 
+            RowBox[{"1", ";;", "2"}], "]"}], "]"}], " ", "//", " ", 
+          "Normalize"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"terminalAngle", " ", "=", " ", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"out", "[", 
+              RowBox[{"[", "1", "]"}], "]"}], " ", "==", " ", "0"}], " ", "&&",
+             " ", 
+            RowBox[{
+             RowBox[{"out", "[", 
+              RowBox[{"[", "2", "]"}], "]"}], " ", "==", " ", "0"}]}], ",", 
+           " ", "10000", ",", " ", 
+           RowBox[{"ArcTan", "[", 
+            RowBox[{
+             RowBox[{"out", "[", 
+              RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+             RowBox[{"out", "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"terminalMass", " ", "=", " ", 
+         RowBox[{"m0", " ", "-", " ", 
+          RowBox[{"out", "[", 
+           RowBox[{"[", "7", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"terminalPos", " ", "=", " ", 
+         RowBox[{"out", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ";;", "2"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "*", " ", "if", " ", "convergence", " ", "is", " ", "achieved"}], ",",
+           " ", 
+          RowBox[{"increment", " ", "numConvergence", " ", "as", " ", 
+           RowBox[{"needed", ".", " ", "update"}], " ", 
+           RowBox[{"costate", ".", " ", "if"}], " ", "convergence", " ", "is",
+            " ", "not", " ", "achieved"}], ",", " ", 
+          RowBox[{
+          "cut", " ", "interval", " ", "in", " ", "half", " ", "adaptively", " ",
+            "until", " ", "it", " ", 
+           RowBox[{"is", "."}]}]}], " ", "**)"}], "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "prevCostate", ",", " ", "prevAngle", ",", " ", "numConvergences", ",",
+            " ", "terminalPos", ",", " ", "terminalMass"}], " ", "}"}], " ", "=",
+          " ", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"EuclideanDistance", "[", 
+                RowBox[{
+                 RowBox[{"-", "terminalDirection"}], ",", " ", 
+                 "targetDirection"}], "]"}], " ", "<", " ", "0.00125"}], "  ",
+               "||", " ", 
+              RowBox[{
+               RowBox[{"EuclideanDistance", "[", 
+                RowBox[{"terminalDirection", ",", " ", "targetDirection"}], 
+                "]"}], "<", " ", "0.00125"}]}], " ", ")"}], "&&", " ", 
+            RowBox[{
+             RowBox[{"Abs", "[", 
+              RowBox[{
+               RowBox[{"terminalMass", " ", "/", " ", 
+                RowBox[{"(", 
+                 RowBox[{"tmax", " ", "fuelpercent", " ", 
+                  RowBox[{"endTime", " ", "/", " ", "isp"}]}], ")"}]}], " ", "-",
+                " ", "1"}], "]"}], " ", "<", " ", "0.01"}]}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"lxm2", "[", 
+                RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+               RowBox[{"lxm2", "[", 
+                RowBox[{"[", "2", "]"}], "]"}], " ", ",", " ", 
+               RowBox[{"lxm2", "[", 
+                RowBox[{"[", "3", "]"}], "]"}]}], " ", "}"}], ",", " ", 
+             "targetAngle", ",", " ", 
+             RowBox[{"numConvergences", " ", "+", " ", "1"}], ",", " ", 
+             RowBox[{"out", "[", 
+              RowBox[{"[", 
+               RowBox[{"1", ";;", "2"}], "]"}], "]"}], ",", " ", 
+             RowBox[{"out", "[", 
+              RowBox[{"[", "7", "]"}], "]"}]}], "}"}], ",", " ", 
+           "\[IndentingNewLine]", 
+           RowBox[{"(", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"While", "[", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"EuclideanDistance", "[", 
+                    RowBox[{
+                    RowBox[{"-", "terminalDirection"}], ",", " ", 
+                    "targetDirection"}], "]"}], " ", ">=", " ", "0.00125"}], 
+                   "  ", "&&", " ", 
+                   RowBox[{
+                    RowBox[{"EuclideanDistance", "[", 
+                    RowBox[{
+                    "terminalDirection", ",", " ", "targetDirection"}], "]"}],
+                     ">=", " ", "0.00125"}]}], " ", ")"}], " ", "||", " ", 
+                 RowBox[{
+                  RowBox[{"Abs", "[", 
+                   RowBox[{
+                    RowBox[{"terminalMass", " ", "/", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"tmax", " ", "fuelpercent", " ", 
+                    RowBox[{"endTime", " ", "/", " ", "isp"}]}], ")"}]}], " ",
+                     "-", " ", "1"}], "]"}], " ", ">=", " ", "0.01"}]}], 
+                ")"}], ",", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"curTotalPoints", " ", ">=", " ", "10000"}], ",", 
+                  " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"lxm2", " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"findInitialCostates", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], 
+                    "}"}], ",", " ", 
+                    RowBox[{"getFinalEnergyPos", "[", 
+                    RowBox[{"endTime", ",", " ", 
+                    RowBox[{"tmax", " ", "fuelpercent"}], " ", ",", " ", "n", 
+                    ",", " ", "nextDirection"}], "]"}], ",", " ", "n", ",", 
+                    " ", "A", ",", " ", "endTime", ",", " ", 
+                    RowBox[{"tmax", " ", "fuelpercent", " ", 
+                    RowBox[{"endTime", " ", "/", " ", "isp"}]}], ",", " ", 
+                    "m0", ",", " ", 
+                    RowBox[{"tmax", " ", "/", " ", "m0"}]}], " ", "]"}], "[", 
+                    
+                    RowBox[{"[", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", " ", "2", ",", " ", "7"}], "}"}], "]"}],
+                     "]"}]}], ";", 
+                    RowBox[{"Break", "[", "]"}]}], ")"}], ",", " ", "10"}], 
+                 "]"}], ";", "\[IndentingNewLine]", 
+                RowBox[{"curTotalPoints", " ", "=", " ", 
+                 RowBox[{"2", " ", "curTotalPoints"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"Print", "[", "curTotalPoints", "]"}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{
+                "Print", "[", "\"\<sampling density doubled\>\"", "]"}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"targetAngle", " ", "=", " ", 
+                 RowBox[{"prevAngle", " ", "+", " ", 
+                  RowBox[{"2", " ", 
+                   RowBox[{"Pi", " ", "/", " ", "curTotalPoints"}]}]}]}], ";",
+                 "\[IndentingNewLine]", 
+                RowBox[{"targetDirection", " ", "=", " ", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"Cos", "[", "targetAngle", "]"}], ",", " ", 
+                    RowBox[{"Sin", "[", "targetAngle", "]"}]}], "}"}], " ", "//",
+                   " ", "N"}]}], ";", "\[IndentingNewLine]", 
+                RowBox[{"lxm2", " ", "=", " ", 
+                 RowBox[{"rootfind", "[", 
+                  RowBox[{"prevCostate", ",", "  ", 
+                   RowBox[{"tmax", " ", "fuelpercent", " ", 
+                    RowBox[{"endTime", " ", "/", " ", "isp"}]}], ",", " ", 
+                   "targetDirection", ",", " ", "A", ",", " ", "m0", ",", " ",
+                    "isp", ",", " ", "endTime", ",", " ", "tmax"}], "]"}]}], ";",
+                 "\[IndentingNewLine]", 
+                RowBox[{"out", "=", " ", 
+                 RowBox[{"propStateCostatev2", "[", 
+                  RowBox[{
+                   RowBox[{"Join", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",",
+                     "m0"}], "}"}], ",", "   ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], ",", " ", "0"}], "}"}], ",",
+                     " ", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"v4", ",", " ", "v5"}], "}"}], " ", "/.", " ", 
+                    "subs"}], " ", ")"}], " ", "/.", " ", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"v1", "->", 
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], ",", " ", 
+                    RowBox[{"v2", " ", "->", 
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}]}], "}"}]}], ",", " ", 
+                    RowBox[{"{", 
+                    RowBox[{"0", ",", " ", 
+                    RowBox[{"lxm2", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "]"}], "]"}]}],
+                     "]"}], ",", " ", "isp", ",", " ", "endTime", ",", " ", 
+                   "tmax", ",", " ", "A"}], "]"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"terminalAngle", " ", "=", " ", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"out", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "==", " ", "0"}], 
+                    " ", "&&", " ", 
+                    RowBox[{
+                    RowBox[{"out", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "==", " ", "0"}]}], ",",
+                    " ", "10000", ",", " ", 
+                   RowBox[{"ArcTan", "[", 
+                    RowBox[{
+                    RowBox[{"out", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+                    RowBox[{"out", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], "]"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"terminalDirection", " ", "=", " ", 
+                 RowBox[{
+                  RowBox[{"out", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"1", ";;", "2"}], "]"}], "]"}], " ", "//", " ", 
+                  "Normalize"}]}], ";", "\[IndentingNewLine]", 
+                RowBox[{"terminalMass", " ", "=", " ", 
+                 RowBox[{"m0", " ", "-", " ", 
+                  RowBox[{"out", "[", 
+                   RowBox[{"[", "7", "]"}], "]"}]}]}], ";"}]}], 
+              "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"lxm2", "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+                 RowBox[{"lxm2", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], " ", ",", " ", 
+                 RowBox[{"lxm2", "[", 
+                  RowBox[{"[", "3", "]"}], "]"}]}], " ", "}"}], ",", " ", 
+               "targetAngle", ",", " ", "0", ",", " ", 
+               RowBox[{"out", "[", 
+                RowBox[{"[", 
+                 RowBox[{"1", ";;", "2"}], "]"}], "]"}], ",", " ", 
+               RowBox[{"out", "[", 
+                RowBox[{"[", "7", "]"}], "]"}]}], "}"}]}], 
+            "\[IndentingNewLine]", ")"}]}], "\[IndentingNewLine]", "]"}]}], ";",
+         "\[IndentingNewLine]", 
+        RowBox[{"Append", "[", 
+         RowBox[{"anglearrs", ",", " ", "prevAngle"}], "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"Append", "[", 
+         RowBox[{"costatearrs", ",", " ", "prevCostate"}], "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"Append", "[", 
+         RowBox[{"positionarrs", ",", " ", 
+          RowBox[{"-", "terminalPos"}]}], "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"Append", "[", 
+         RowBox[{"massarrs", ",", " ", "terminalMass"}], "]"}], ";"}]}], 
+      "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{
+      "anglearrs", ",", " ", "costatearrs", ",", " ", "positionarrs", ",", 
+       " ", "massarrs"}], "}"}]}]}], "\[IndentingNewLine]", "]"}]}]], "Input",\
+ExpressionUUID->"83bfc0a9-75fc-463e-9f92-ef9e7cc0ddca"]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{352, Automatic}, {Automatic, 50}},
+FrontEndVersion->"14.2 for Mac OS X ARM (64-bit) (December 26, 2024)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"29b2c827-a672-48a0-9dc1-9e21a9c4ac32"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[554, 20, 20238, 442, 1295, "Input",ExpressionUUID->"83bfc0a9-75fc-463e-9f92-ef9e7cc0ddca"]
+}
+]
+*)
+
